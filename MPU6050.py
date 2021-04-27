@@ -1,4 +1,7 @@
 __author__ = 'Geir Istad'
+
+from joblib.numpy_pickle_utils import xrange
+
 """
 MPU6050 Python I2C Class
 Copyright (c) 2015 Geir Istad
@@ -807,7 +810,7 @@ class MPU6050:
     def DMP_get_linear_accel_int16(self, a_v_raw, a_grav):
         x = ctypes.c_int16(a_v_raw.x - (a_grav.x*8192)).value
         y = ctypes.c_int16(a_v_raw.y - (a_grav.y*8192)).value
-        y = ctypes.c_int16(a_v_raw.y - (a_grav.y*8192)).value
+        z = ctypes.c_int16(a_v_raw.z - (a_grav.z*8192)).value
         return V(x, y, z)
 
     def DMP_get_euler(self, a_quat):
@@ -874,7 +877,7 @@ class MPU6050IRQHandler:
         self.__packet_size = self.__mpu.DMP_get_FIFO_packet_size()
         mpu_int_status = self.__mpu.get_int_status()
         if a_logging:
-            self.__start_time = time.clock()
+            self.__start_time = time.process_time()
             self.__logging = True
             self.__log_file = open(a_log_file, 'ab')
             self.__csv_writer = csv.writer(self.__log_file, delimiter=',',
